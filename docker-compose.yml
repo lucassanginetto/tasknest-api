@@ -3,23 +3,23 @@ services:
     container_name: tasknest-pg
     image: postgres
     environment:
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASS}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: dev_db
       PG_DATA: /data/postgres
     ports:
-      - "${DATABASE_PORT}:5432"
+      - "5432:5432"
 
   api:
     container_name: tasknest-api
     build:
       context: .
     environment:
-      DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASS}@postgres:${DATABASE_PORT}/${DATABASE_NAME}"
+      DATABASE_URL: "postgresql://dev_user:dev_password@pg:5432/dev_db"
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       JWT_TOKEN_EXPIRE_MINUTES: ${JWT_TOKEN_EXPIRE_MINUTES}
     ports:
-      - "${PORT}:3001"
+      - "3001:3001"
 
 networks:
   default:
