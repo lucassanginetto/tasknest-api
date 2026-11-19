@@ -1,6 +1,6 @@
 import { createZodDto } from "nestjs-zod";
-import { createTaskSchema, taskResponseSchema, updateTaskSchema } from "tasknest-schemas";
+import { zTaskCreationData, zTaskResponse, zTaskUpdateData } from "tasknest-schemas";
 
-export class CreateTaskDto extends createZodDto(createTaskSchema) { }
-export class UpdateTaskDto extends createZodDto(updateTaskSchema) { }
-export class TaskResponseDto extends createZodDto(taskResponseSchema) { }
+export class CreateTaskDto extends createZodDto(zTaskCreationData) { }
+export class UpdateTaskDto extends createZodDto(zTaskUpdateData) { }
+export class TaskResponseDto extends createZodDto(zTaskResponse) { }

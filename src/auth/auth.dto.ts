@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod'
-import { jwtResponseSchema, loginSchema, signupSchema, userResponseSchema } from 'tasknest-schemas';
+import { zJwtResponse, zLoginData, zSignupData, zUserResponse } from 'tasknest-schemas';
 
-export class LoginDto extends createZodDto(loginSchema) { }
-export class SignupDto extends createZodDto(signupSchema) { }
-export class UserResponseDto extends createZodDto(userResponseSchema) { }
-export class JwtResponseDto extends createZodDto(jwtResponseSchema) { }
+export class LoginDto extends createZodDto(zLoginData) { }
+export class SignupDto extends createZodDto(zSignupData) { }
+export class UserResponseDto extends createZodDto(zUserResponse) { }
+export class JwtResponseDto extends createZodDto(zJwtResponse) { }
