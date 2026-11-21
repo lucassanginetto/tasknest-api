@@ -22,4 +22,14 @@ export class PrismaService
   async onModuleDestroy() {
     await this.$disconnect()
   }
+
+  async isConnectionOk() {
+    try {
+      await this.$queryRaw`SELECT 1`
+      return true
+    } catch (error) {
+      console.error('Database connection failed:', error)
+      return false
+    }
+  }
 }
