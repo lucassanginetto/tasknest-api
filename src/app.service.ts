@@ -17,14 +17,14 @@ export class AppService {
   async health() {
     return await this.prismaService.isConnectionOk()
       ? {
-        timestamp: (new Date()).toString(),
+        timestamp: (new Date()).toISOString(),
         status: 'UP' as const,
         details: {
           database: "Connected and operational"
         }
       }
       : {
-        timestamp: (new Date()).toString(),
+        timestamp: (new Date()).toISOString(),
         status: 'DOWN' as const,
         details: {
           database: "Connection failed"
