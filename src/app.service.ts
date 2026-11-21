@@ -24,7 +24,7 @@ export class AppService {
         }
       }
       : {
-        timestamp: new Date(),
+        timestamp: (new Date()).toString(),
         status: 'DOWN' as const,
         details: {
           database: "Connection failed"
