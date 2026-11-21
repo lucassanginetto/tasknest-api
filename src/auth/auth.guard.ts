@@ -3,9 +3,19 @@ import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest as Request } from 'fastify'
 
 import { jwtConstants } from './constants';
+import z from 'zod';
+
+export const zJwtPayload = z.object({
+  sub: z.int(),
+  name: z.string(),
+  email: z.email(),
+  iat: z.int(),
+  exp: z.int()
+})
+export type JwtPayload = z.infer<typeof zJwtPayload>
 
 interface AuthRequest extends Request {
-  jwtPayload: unknown
+  jwtPayload: JwtPayload
 }
 
 export const JwtPayload = createParamDecorator(
@@ -31,9 +41,11 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.SECRET
-      });
+      const payload = zJwtPayload.parse(
+        await this.jwtService.verifyAsync(token, {
+          secret: jwtConstants.SECRET
+        })
+      );
       (request as AuthRequest).jwtPayload = payload
 
     } catch {
