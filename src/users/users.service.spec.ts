@@ -1,12 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
-import { beforeEach, describe, expect, it, jest } from 'bun:test';
-import { err, ok } from 'neverthrow';
-import { PrismaService } from '../prisma/prisma.service';
-import { BcryptService } from '../bcrypt/bcrypt.service';
+import { Test, TestingModule } from '@nestjs/testing'
+import { UsersService } from './users.service'
+import { beforeEach, describe, expect, it, jest } from 'bun:test'
+import { err, ok } from 'neverthrow'
+import { PrismaService } from '../prisma/prisma.service'
+import { BcryptService } from '../bcrypt/bcrypt.service'
 
 describe('UsersService', () => {
-  let service: UsersService;
+  let service: UsersService
 
   const mockPrismaService = {
     user: {
@@ -16,24 +16,26 @@ describe('UsersService', () => {
             id: 1,
             name: 'Already Exists',
             email: 'alreadyexists@test.com',
-            password: 'hashed_testpassword123'
+            password: 'hashed_testpassword123',
           }
         }
         return null
       }),
-      create: jest.fn((args: {
-        data: {
-          name: string;
-          email: string;
-          password: string;
-        }
-      }) => {
-        return {
-          id: 1,
-          ...args.data
-        }
-      })
-    }
+      create: jest.fn(
+        (args: {
+          data: {
+            name: string
+            email: string
+            password: string
+          }
+        }) => {
+          return {
+            id: 1,
+            ...args.data,
+          }
+        },
+      ),
+    },
   }
 
   const mockBcryptService = {
@@ -48,30 +50,40 @@ describe('UsersService', () => {
       .useValue(mockPrismaService)
       .overrideProvider(BcryptService)
       .useValue(mockBcryptService)
-      .compile();
+      .compile()
 
-    service = module.get<UsersService>(UsersService);
-  });
+    service = module.get<UsersService>(UsersService)
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    expect(service).toBeDefined()
+  })
 
   describe('signup', () => {
     it('should create a new user and return their id, name and email', async () => {
-      expect(service.create({ name: 'Test', email: 'user@test.com', password: 'testpassword123' }))
-        .resolves
-        .toEqual(ok({
+      expect(
+        service.create({
+          name: 'Test',
+          email: 'user@test.com',
+          password: 'testpassword123',
+        }),
+      ).resolves.toEqual(
+        ok({
           id: expect.any(Number),
           name: 'Test',
-          email: 'user@test.com'
-        }))
+          email: 'user@test.com',
+        }),
+      )
     })
 
     it("should return an EMAIL_CONFLICT error if there's already a user with the provided email", async () => {
-      expect(service.create({ name: 'Test', email: 'alreadyexists@test.com', password: 'testpassword123' }))
-        .resolves
-        .toEqual(err('EMAIL_CONFLICT'))
+      expect(
+        service.create({
+          name: 'Test',
+          email: 'alreadyexists@test.com',
+          password: 'testpassword123',
+        }),
+      ).resolves.toEqual(err('EMAIL_CONFLICT'))
     })
   })
-});
+})

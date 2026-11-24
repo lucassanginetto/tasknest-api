@@ -1,21 +1,21 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
+import { Test, TestingModule } from '@nestjs/testing'
+import { INestApplication } from '@nestjs/common'
+import request from 'supertest'
+import { App } from 'supertest/types'
+import { AppModule } from './../src/app.module'
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication<App>
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    }).compile()
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+    app = moduleFixture.createNestApplication()
+    await app.init()
+  })
 
   it('/status (GET)', () => {
     return request(app.getHttpServer())
@@ -25,10 +25,10 @@ describe('AppController (e2e)', () => {
       .expect((res) => {
         expect(Number.isNaN(Date.parse(res.body.currentTime))).toEqual(false)
         expect(res.body.applicationStatus).toBe('Running')
-      });
-  });
+      })
+  })
 
   afterEach(async () => {
-    await app.close();
-  });
-});
+    await app.close()
+  })
+})

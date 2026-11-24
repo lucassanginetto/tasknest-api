@@ -1,15 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-import { App } from 'supertest/types';
-import { UsersModule } from '../src/users/users.module';
-import { AuthModule } from '../src/auth/auth.module';
-import { PrismaService } from '../src/prisma/prisma.service';
-import { ZodValidationPipe } from 'nestjs-zod';
-import { afterEach, beforeEach, describe, expect, it, jest } from 'bun:test';
+import { Test, TestingModule } from '@nestjs/testing'
+import { INestApplication } from '@nestjs/common'
+import request from 'supertest'
+import { App } from 'supertest/types'
+import { UsersModule } from '../src/users/users.module'
+import { AuthModule } from '../src/auth/auth.module'
+import { PrismaService } from '../src/prisma/prisma.service'
+import { ZodValidationPipe } from 'nestjs-zod'
+import { afterEach, beforeEach, describe, expect, it, jest } from 'bun:test'
 
 describe('AuthController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication<App>
 
   const mockPrismaService = {
     user: {
@@ -21,8 +21,8 @@ describe('AuthController (e2e)', () => {
           email: args.data.email,
           password: args.data.password,
         }
-      })
-    }
+      }),
+    },
   }
 
   beforeEach(async () => {
@@ -31,12 +31,12 @@ describe('AuthController (e2e)', () => {
     })
       .overrideProvider(PrismaService)
       .useValue(mockPrismaService)
-      .compile();
+      .compile()
 
     app = moduleFixture.createNestApplication()
     app.useGlobalPipes(new ZodValidationPipe())
-    await app.init();
-  });
+    await app.init()
+  })
 
   it('/users (POST) --> 400 on validation error', () => {
     return request(app.getHttpServer())
@@ -48,18 +48,22 @@ describe('AuthController (e2e)', () => {
   it('/users (POST)', async () => {
     return request(app.getHttpServer())
       .post('/users')
-      .send({ name: 'Test', email: 'user@test.com', password: 'testpassword123' })
+      .send({
+        name: 'Test',
+        email: 'user@test.com',
+        password: 'testpassword123',
+      })
       .expect(201)
       .then((response) => {
         expect(response.body).toEqual({
           id: expect.any(Number),
           name: 'Test',
-          email: 'user@test.com'
+          email: 'user@test.com',
         })
       })
   })
 
   afterEach(async () => {
-    await app.close();
+    await app.close()
   })
 })

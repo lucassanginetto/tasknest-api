@@ -1,15 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res, Query, ParseEnumPipe, ParseIntPipe, NotFoundException, InternalServerErrorException, HttpCode, HttpStatus } from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
-import { AuthGuard, JwtPayload } from '../auth/auth.guard';
-import type { FastifyReply as Reply } from 'fastify';
-import { Status } from '../prisma/generated/enums';
-import { CreateTaskDto, TaskResponseDto, UpdateTaskDto } from './tasks.dto';
-import { ZodResponse } from 'nestjs-zod';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Res,
+  Query,
+  ParseEnumPipe,
+  ParseIntPipe,
+  NotFoundException,
+  InternalServerErrorException,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common'
+import { TasksService } from './tasks.service'
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
+import { AuthGuard, JwtPayload } from '../auth/auth.guard'
+import type { FastifyReply as Reply } from 'fastify'
+import { Status } from '../prisma/generated/enums'
+import { CreateTaskDto, TaskResponseDto, UpdateTaskDto } from './tasks.dto'
+import { ZodResponse } from 'nestjs-zod'
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) { }
+  constructor(private readonly tasksService: TasksService) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -18,7 +35,7 @@ export class TasksController {
   async create(
     @Body() createTaskDto: CreateTaskDto,
     @JwtPayload() jwtPayload: JwtPayload,
-    @Res({ passthrough: true }) reply: Reply
+    @Res({ passthrough: true }) reply: Reply,
   ) {
     const task = await this.tasksService.create(jwtPayload.sub, createTaskDto)
     reply.header('Location', `/users/${task.id}`)
@@ -31,7 +48,8 @@ export class TasksController {
   @Get()
   @ZodResponse({ type: [TaskResponseDto] })
   findAll(
-    @Query('status', new ParseEnumPipe(Status, { optional: true })) status: Status | undefined,
+    @Query('status', new ParseEnumPipe(Status, { optional: true }))
+    status: Status | undefined,
     @JwtPayload() jwtPayload: JwtPayload,
   ) {
     if (status !== undefined) {
@@ -62,7 +80,9 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @JwtPayload() jwtPayload: JwtPayload,
   ) {
-    return (await this.tasksService.update(jwtPayload.sub, id, updateTaskDto)).match(
+    return (
+      await this.tasksService.update(jwtPayload.sub, id, updateTaskDto)
+    ).match(
       (task) => task,
       (error) => {
         switch (error.kind) {
@@ -72,7 +92,7 @@ export class TasksController {
             console.error(error.cause)
             throw new InternalServerErrorException()
         }
-      }
+      },
     )
   }
 

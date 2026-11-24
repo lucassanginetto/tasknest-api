@@ -1,16 +1,22 @@
-import { CanActivate, createParamDecorator, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import {
+  CanActivate,
+  createParamDecorator,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 import { FastifyRequest as Request } from 'fastify'
 
-import { jwtConstants } from './constants';
-import z from 'zod';
+import { jwtConstants } from './constants'
+import z from 'zod'
 
 export const zJwtPayload = z.object({
   sub: z.int(),
   name: z.string(),
   email: z.email(),
   iat: z.int(),
-  exp: z.int()
+  exp: z.int(),
 })
 export type JwtPayload = z.infer<typeof zJwtPayload>
 
@@ -22,16 +28,14 @@ export const JwtPayload = createParamDecorator(
   (_: unknown, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest<AuthRequest>()
     return request.jwtPayload
-  }
+  },
 )
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) { }
+  constructor(private jwtService: JwtService) {}
 
-  async canActivate(
-    context: ExecutionContext,
-  ) {
+  async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<Request>()
 
     const token = this.extractTokenFromHeader(request)
@@ -43,11 +47,10 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = zJwtPayload.parse(
         await this.jwtService.verifyAsync(token, {
-          secret: jwtConstants.SECRET
-        })
-      );
-      (request as AuthRequest).jwtPayload = payload
-
+          secret: jwtConstants.SECRET,
+        }),
+      )
+      ;(request as AuthRequest).jwtPayload = payload
     } catch {
       throw new UnauthorizedException()
     }

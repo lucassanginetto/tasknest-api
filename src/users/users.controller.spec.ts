@@ -1,14 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { beforeEach, describe, expect, it, jest } from 'bun:test';
-import { CreateUserDto } from './users.dto';
-import { err, ok } from 'neverthrow';
-import { ConflictException } from '@nestjs/common';
-import { AuthGuard } from '../auth/auth.guard';
+import { Test, TestingModule } from '@nestjs/testing'
+import { UsersController } from './users.controller'
+import { UsersService } from './users.service'
+import { beforeEach, describe, expect, it, jest } from 'bun:test'
+import { CreateUserDto } from './users.dto'
+import { err, ok } from 'neverthrow'
+import { ConflictException } from '@nestjs/common'
+import { AuthGuard } from '../auth/auth.guard'
 
 describe('UsersController', () => {
-  let controller: UsersController;
+  let controller: UsersController
 
   const mockUsersService = {
     create: jest.fn((dto: CreateUserDto) => {
@@ -33,30 +33,28 @@ describe('UsersController', () => {
       .useValue(mockUsersService)
       .overrideGuard(AuthGuard)
       .useValue(mockAuthGuard)
-      .compile();
+      .compile()
 
-    controller = module.get<UsersController>(UsersController);
-  });
+    controller = module.get<UsersController>(UsersController)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    expect(controller).toBeDefined()
+  })
 
   describe('create', () => {
     it('should create user using service', async () => {
       const dto: CreateUserDto = {
         name: 'Test',
         email: 'user@test.com',
-        password: 'testpassword123'
+        password: 'testpassword123',
       }
 
-      expect(controller.create(dto))
-        .resolves
-        .toEqual({
-          id: expect.any(Number),
-          name: 'Test',
-          email: 'user@test.com'
-        })
+      expect(controller.create(dto)).resolves.toEqual({
+        id: expect.any(Number),
+        name: 'Test',
+        email: 'user@test.com',
+      })
 
       expect(mockUsersService.create).toHaveBeenCalledWith(dto)
     })
@@ -65,14 +63,12 @@ describe('UsersController', () => {
       const dto: CreateUserDto = {
         name: 'Test',
         email: 'alreadyexists@test.com',
-        password: 'testpassword123'
+        password: 'testpassword123',
       }
 
-      expect(controller.create(dto))
-        .rejects
-        .toThrow(ConflictException)
+      expect(controller.create(dto)).rejects.toThrow(ConflictException)
 
       expect(mockUsersService.create).toHaveBeenCalledWith(dto)
     })
   })
-});
+})

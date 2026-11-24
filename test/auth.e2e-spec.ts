@@ -1,13 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { App } from 'supertest/types';
-import { AuthModule } from '../src/auth/auth.module';
-import { PrismaService } from '../src/prisma/prisma.service';
-import { ZodValidationPipe } from 'nestjs-zod';
-import { afterEach, beforeEach, describe, jest } from 'bun:test';
+import { Test, TestingModule } from '@nestjs/testing'
+import { INestApplication } from '@nestjs/common'
+import { App } from 'supertest/types'
+import { AuthModule } from '../src/auth/auth.module'
+import { PrismaService } from '../src/prisma/prisma.service'
+import { ZodValidationPipe } from 'nestjs-zod'
+import { afterEach, beforeEach, describe, jest } from 'bun:test'
 
 describe('AuthController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication<App>
 
   const mockPrismaService = {
     user: {
@@ -19,8 +19,8 @@ describe('AuthController (e2e)', () => {
           email: args.data.email,
           password: args.data.password,
         }
-      })
-    }
+      }),
+    },
   }
 
   beforeEach(async () => {
@@ -29,14 +29,14 @@ describe('AuthController (e2e)', () => {
     })
       .overrideProvider(PrismaService)
       .useValue(mockPrismaService)
-      .compile();
+      .compile()
 
     app = moduleFixture.createNestApplication()
     app.useGlobalPipes(new ZodValidationPipe())
-    await app.init();
-  });
+    await app.init()
+  })
 
   afterEach(async () => {
-    await app.close();
+    await app.close()
   })
 })

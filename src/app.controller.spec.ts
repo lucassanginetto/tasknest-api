@@ -1,15 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { beforeEach, describe, expect, it, jest } from 'bun:test';
-import { PrismaService } from './prisma/prisma.service';
-import { ServiceUnavailableException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { beforeEach, describe, expect, it, jest } from 'bun:test'
+import { PrismaService } from './prisma/prisma.service'
+import { ServiceUnavailableException } from '@nestjs/common'
 
 describe('AppController', () => {
-  let appController: AppController;
+  let appController: AppController
 
   const mockPrismaService = {
-    isConnectionOk: jest.fn(async () => true)
+    isConnectionOk: jest.fn(async () => true),
   }
 
   beforeEach(async () => {
@@ -19,10 +19,10 @@ describe('AppController', () => {
     })
       .overrideProvider(PrismaService)
       .useValue(mockPrismaService)
-      .compile();
+      .compile()
 
-    appController = app.get<AppController>(AppController);
-  });
+    appController = app.get<AppController>(AppController)
+  })
 
   describe('health', () => {
     it('should return status UP if database connection is working', () => {
@@ -30,14 +30,16 @@ describe('AppController', () => {
         status: 'UP',
         timestamp: expect.any(String),
         details: {
-          database: expect.any(String)
-        }
-      });
-    });
+          database: expect.any(String),
+        },
+      })
+    })
 
     it('should throw ServiceUnavailable exception if database connection is not working', () => {
       mockPrismaService.isConnectionOk.mockResolvedValue(false)
-      expect(appController.health()).rejects.toThrow(ServiceUnavailableException)
+      expect(appController.health()).rejects.toThrow(
+        ServiceUnavailableException,
+      )
     })
-  });
-});
+  })
+})

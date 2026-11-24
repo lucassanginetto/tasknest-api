@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { err, ok } from 'neverthrow';
+import { Injectable } from '@nestjs/common'
+import { err, ok } from 'neverthrow'
 
-import { CreateUserDto, UpdateUserDto } from './users.dto';
-import { BcryptService } from '../bcrypt/bcrypt.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import { CreateUserDto, UpdateUserDto } from './users.dto'
+import { BcryptService } from '../bcrypt/bcrypt.service'
+import { PrismaService } from '../prisma/prisma.service'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
 
 @Injectable()
 export class UsersService {
@@ -19,12 +19,10 @@ export class UsersService {
         where: { email: createUserDto.email },
       })) !== null
     ) {
-      return err('EMAIL_CONFLICT');
+      return err('EMAIL_CONFLICT')
     }
 
-    const hashedPassword = await this.bcryptService.hash(
-      createUserDto.password,
-    );
+    const hashedPassword = await this.bcryptService.hash(createUserDto.password)
 
     const user = await this.prismaService.user.create({
       data: {
@@ -32,13 +30,13 @@ export class UsersService {
         email: createUserDto.email,
         password: hashedPassword,
       },
-    });
+    })
 
     return ok({
       id: user.id,
       name: user.name,
       email: user.email,
-    });
+    })
   }
 
   // findAll() {
@@ -62,30 +60,30 @@ export class UsersService {
               : undefined,
           },
         }),
-      );
+      )
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2025'
       ) {
-        return err({ kind: 'USER_NOT_FOUND' } as const);
+        return err({ kind: 'USER_NOT_FOUND' } as const)
       } else {
-        return err({ kind: 'UNKNOWN_ERROR', cause: error } as const);
+        return err({ kind: 'UNKNOWN_ERROR', cause: error } as const)
       }
     }
   }
 
   async remove(id: number) {
     try {
-      return ok(await this.prismaService.user.delete({ where: { id } }));
+      return ok(await this.prismaService.user.delete({ where: { id } }))
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2025'
       ) {
-        return err({ kind: 'USER_NOT_FOUND' } as const);
+        return err({ kind: 'USER_NOT_FOUND' } as const)
       } else {
-        return err({ kind: 'UNKNOWN_ERROR', cause: error } as const);
+        return err({ kind: 'UNKNOWN_ERROR', cause: error } as const)
       }
     }
   }

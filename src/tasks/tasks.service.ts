@@ -1,16 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { Status } from '../prisma/generated/enums';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { err, ok } from 'neverthrow';
-import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
+import { Status } from '../prisma/generated/enums'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
+import { err, ok } from 'neverthrow'
+import { CreateTaskDto, UpdateTaskDto } from './tasks.dto'
 
 @Injectable()
 export class TasksService {
-  constructor(private prismaService: PrismaService) { }
+  constructor(private prismaService: PrismaService) {}
 
   create(userId: number, createTaskDto: CreateTaskDto) {
-    return this.prismaService.task.create({ data: { title: createTaskDto.title, description: createTaskDto.description, status: createTaskDto.status, userId } })
+    return this.prismaService.task.create({
+      data: {
+        title: createTaskDto.title,
+        description: createTaskDto.description,
+        status: createTaskDto.status,
+        userId,
+      },
+    })
   }
 
   findAll(userId: number) {
@@ -21,14 +28,14 @@ export class TasksService {
     return this.prismaService.task.findMany({
       where: {
         userId,
-        status
-      }
+        status,
+      },
     })
   }
 
   findOne(userId: number, id: number) {
     return this.prismaService.task.findUnique({
-      where: { userId, id }
+      where: { userId, id },
     })
   }
 
@@ -40,12 +47,15 @@ export class TasksService {
           data: {
             title: updateTaskDto.title,
             description: updateTaskDto.description,
-            status: updateTaskDto.status
-          }
-        })
+            status: updateTaskDto.status,
+          },
+        }),
       )
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         return err({ kind: 'TASK_NOT_FOUND' } as const)
       } else {
         return err({ kind: 'UNKNOWN_ERROR', cause: error } as const)
@@ -57,7 +67,10 @@ export class TasksService {
     try {
       return ok(await this.prismaService.task.delete({ where: { userId, id } }))
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
         return err({ kind: 'TASK_NOT_FOUND' } as const)
       } else {
         return err({ kind: 'UNKNOWN_ERROR', cause: error } as const)

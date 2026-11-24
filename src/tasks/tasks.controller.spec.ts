@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { TasksController } from './tasks.controller';
-import { TasksService } from './tasks.service';
-import { AuthGuard } from '../auth/auth.guard';
-import { beforeEach, describe, expect, it } from 'bun:test';
+import { Test, TestingModule } from '@nestjs/testing'
+import { TasksController } from './tasks.controller'
+import { TasksService } from './tasks.service'
+import { AuthGuard } from '../auth/auth.guard'
+import { beforeEach, describe, expect, it } from 'bun:test'
 
 describe('TasksController', () => {
-  let controller: TasksController;
+  let controller: TasksController
 
   const mockTasksService = {}
   const mockAuthGuard = {}
@@ -19,12 +19,12 @@ describe('TasksController', () => {
       .useValue(mockTasksService)
       .overrideGuard(AuthGuard)
       .useValue(mockAuthGuard)
-      .compile();
+      .compile()
 
-    controller = module.get<TasksController>(TasksController);
-  });
+    controller = module.get<TasksController>(TasksController)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+})

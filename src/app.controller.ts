@@ -1,13 +1,18 @@
-import { Controller, Get, Redirect, ServiceUnavailableException } from '@nestjs/common';
-import { AppService, zHealth } from './app.service';
-import { createZodDto, ZodResponse } from 'nestjs-zod';
-import { ApiExcludeEndpoint } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Redirect,
+  ServiceUnavailableException,
+} from '@nestjs/common'
+import { AppService, zHealth } from './app.service'
+import { createZodDto, ZodResponse } from 'nestjs-zod'
+import { ApiExcludeEndpoint } from '@nestjs/swagger'
 
-class HealthDto extends createZodDto(zHealth) { }
+class HealthDto extends createZodDto(zHealth) {}
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @ApiExcludeEndpoint()
   @Get()

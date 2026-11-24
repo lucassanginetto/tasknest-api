@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { TasksService } from './tasks.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { beforeEach, describe, expect, it } from 'bun:test';
+import { Test, TestingModule } from '@nestjs/testing'
+import { TasksService } from './tasks.service'
+import { PrismaService } from '../prisma/prisma.service'
+import { beforeEach, describe, expect, it } from 'bun:test'
 
 describe('TasksService', () => {
-  let service: TasksService;
+  let service: TasksService
 
   const mockPrismaService = {}
 
@@ -14,12 +14,12 @@ describe('TasksService', () => {
     })
       .overrideProvider(PrismaService)
       .useValue(mockPrismaService)
-      .compile();
+      .compile()
 
-    service = module.get<TasksService>(TasksService);
-  });
+    service = module.get<TasksService>(TasksService)
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    expect(service).toBeDefined()
+  })
+})
