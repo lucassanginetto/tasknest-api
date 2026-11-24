@@ -9,6 +9,7 @@
     "build": "prisma generate && nest build",
     "deploy": "nest deploy",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "prisma generate && nest start",
     "dev": "prisma generate && nest start --watch --preserveWatchOutput",
     "start:debug": "prisma generate && nest start --debug --watch",
@@ -43,9 +44,7 @@
     "tasknest-schemas": "lucassanginetto/tasknest-schemas#1e355cb",
     "zod": "^4.6.7"
   },
-  "trustedDependencies": [
-    "tasknest-schemas"
-  ],
+  "trustedDependencies": ["tasknest-schemas"],
   "devDependencies": {
     "@nestjs/cli": "^12.0.0",
     "@nestjs/mau": "^0.2.6",
