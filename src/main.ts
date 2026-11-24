@@ -9,7 +9,7 @@ import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
 
-  app.setGlobalPrefix('api')
+  app.setGlobalPrefix('api', {exclude: ['']})
 
   app.useGlobalPipes(
     new ZodValidationPipe()
