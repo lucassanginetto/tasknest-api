@@ -17,10 +17,10 @@ export class TasksController {
   @ZodResponse({ type: TaskResponseDto })
   async create(
     @Body() createTaskDto: CreateTaskDto,
-    @JwtPayload() jwtPayload: { id: number },
+    @JwtPayload() jwtPayload: JwtPayload,
     @Res({ passthrough: true }) reply: Reply
   ) {
-    const task = await this.tasksService.create(jwtPayload.id, createTaskDto)
+    const task = await this.tasksService.create(jwtPayload.sub, createTaskDto)
     reply.header('Location', `/users/${task.id}`)
     return task
   }
@@ -32,12 +32,12 @@ export class TasksController {
   @ZodResponse({ type: [TaskResponseDto] })
   findAll(
     @Query('status', new ParseEnumPipe(Status, { optional: true })) status: Status | undefined,
-    @JwtPayload() jwtPayload: { id: number },
+    @JwtPayload() jwtPayload: JwtPayload,
   ) {
     if (status !== undefined) {
-      return this.tasksService.findByStatus(jwtPayload.id, status)
+      return this.tasksService.findByStatus(jwtPayload.sub, status)
     }
-    return this.tasksService.findAll(jwtPayload.id)
+    return this.tasksService.findAll(jwtPayload.sub)
   }
 
   @ApiBearerAuth()
@@ -46,9 +46,9 @@ export class TasksController {
   @ZodResponse({ type: TaskResponseDto })
   async findOne(
     @Param('id', ParseIntPipe) id: number,
-    @JwtPayload() jwtPayload: { id: number },
+    @JwtPayload() jwtPayload: JwtPayload,
   ) {
-    const task = await this.tasksService.findOne(jwtPayload.id, id)
+    const task = await this.tasksService.findOne(jwtPayload.sub, id)
     if (task === null) throw new NotFoundException('Task not found')
     return task
   }
@@ -60,9 +60,9 @@ export class TasksController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTaskDto: UpdateTaskDto,
-    @JwtPayload() jwtPayload: { id: number },
+    @JwtPayload() jwtPayload: JwtPayload,
   ) {
-    return (await this.tasksService.update(jwtPayload.id, id, updateTaskDto)).match(
+    return (await this.tasksService.update(jwtPayload.sub, id, updateTaskDto)).match(
       (task) => task,
       (error) => {
         switch (error.kind) {
@@ -82,9 +82,9 @@ export class TasksController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
     @Param('id', ParseIntPipe) id: number,
-    @JwtPayload() jwtPayload: { id: number },
+    @JwtPayload() jwtPayload: JwtPayload,
   ) {
-    const removeResult = await this.tasksService.remove(jwtPayload.id, id)
+    const removeResult = await this.tasksService.remove(jwtPayload.sub, id)
     if (removeResult.isErr()) {
       switch (removeResult.error.kind) {
         case 'TASK_NOT_FOUND':
