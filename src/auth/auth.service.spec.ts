@@ -22,24 +22,11 @@ describe('AuthService', () => {
           }
         }
         return null
-      }),
-      create: jest.fn((args: {
-        data: {
-          name: string;
-          email: string;
-          password: string;
-        }
-      }) => {
-        return {
-          id: 1,
-          ...args.data
-        }
       })
     }
   }
 
   const mockBcryptService = {
-    hash: jest.fn(async (data: string) => `hashed_${data}`),
     compare: jest.fn(async (data: string, encrypted: string) => encrypted === `hashed_${data}`),
   }
 
@@ -63,24 +50,6 @@ describe('AuthService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('signup', () => {
-    it('should create a new user and return their id, name and email', async () => {
-      expect(service.signup({ name: 'Test', email: 'user@test.com', password: 'testpassword123' }))
-        .resolves
-        .toEqual(ok({
-          id: expect.any(Number),
-          name: 'Test',
-          email: 'user@test.com'
-        }))
-    })
-
-    it("should return an EMAIL_CONFLICT error if there's already a user with the provided email", async () => {
-      expect(service.signup({ name: 'Test', email: 'alreadyexists@test.com', password: 'testpassword123' }))
-        .resolves
-        .toEqual(err('EMAIL_CONFLICT'))
-    })
   })
 
   describe('login', () => {

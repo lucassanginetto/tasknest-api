@@ -5,24 +5,13 @@ import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { LoginDto, SignupDto } from './auth.dto';
+import { UnauthorizedException } from '@nestjs/common';
+import { LoginDto } from './auth.dto';
 
 describe('AuthController', () => {
   let controller: AuthController
 
   const mockAuthService = {
-    signup: mock((dto: SignupDto) => {
-      if (dto.email === 'alreadyexists@test.com') {
-        return err('EMAIL_CONFLICT')
-      }
-      return ok({
-        id: 1,
-        name: dto.name,
-        email: dto.email,
-      })
-    }),
-
     login: mock((dto: LoginDto) => {
       if (dto.email !== 'user@test.com') {
         return err('USER_NOT_FOUND')
@@ -53,40 +42,6 @@ describe('AuthController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  })
-
-  describe('signup', () => {
-    it('should signup user using service', async () => {
-      const dto: SignupDto = {
-        name: 'Test',
-        email: 'user@test.com',
-        password: 'testpassword123'
-      }
-
-      expect(controller.signup(dto))
-        .resolves
-        .toEqual({
-          id: expect.any(Number),
-          name: 'Test',
-          email: 'user@test.com'
-        })
-
-      expect(mockAuthService.signup).toHaveBeenCalledWith(dto)
-    })
-
-    it('should throw ConflictException if service returns EMAIL_CONFLICT', async () => {
-      const dto: SignupDto = {
-        name: 'Test',
-        email: 'alreadyexists@test.com',
-        password: 'testpassword123'
-      }
-
-      expect(controller.signup(dto))
-        .rejects
-        .toThrow(ConflictException)
-
-      expect(mockAuthService.signup).toHaveBeenCalledWith(dto)
-    })
   })
 
   describe('login', () => {

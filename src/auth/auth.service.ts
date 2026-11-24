@@ -4,37 +4,11 @@ import { err, ok } from 'neverthrow';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { BcryptService } from '../bcrypt/bcrypt.service';
-import { LoginDto, SignupDto } from './auth.dto';
+import { LoginDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private prismaService: PrismaService, private jwtService: JwtService, private bcryptService: BcryptService) { }
-
-  async signup(signupDto: SignupDto) {
-    if (
-      await this.prismaService.user.findUnique({
-        where: { email: signupDto.email }
-      }) !== null
-    ) {
-      return err('EMAIL_CONFLICT');
-    }
-
-    const hashedPassword = await this.bcryptService.hash(signupDto.password)
-
-    const user = await this.prismaService.user.create({
-      data: {
-        name: signupDto.name,
-        email: signupDto.email,
-        password: hashedPassword,
-      }
-    })
-
-    return ok({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    })
-  }
 
   async login(loginDto: LoginDto) {
     const user = await this.prismaService.user.findUnique({
