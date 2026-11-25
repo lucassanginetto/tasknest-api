@@ -16,4 +16,10 @@ describe('BcryptService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined()
   })
+
+  it('should hash and compare strings', async () => {
+    const hashed_string = await service.hash('string')
+    expect(service.compare('string', hashed_string)).resolves.toBe(true)
+    expect(service.compare('otherstring', hashed_string)).resolves.toBe(false)
+  })
 })
