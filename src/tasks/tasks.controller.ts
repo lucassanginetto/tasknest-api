@@ -38,7 +38,7 @@ export class TasksController {
     @Res({ passthrough: true }) reply: Reply,
   ) {
     const task = await this.tasksService.create(jwtPayload.sub, createTaskDto)
-    reply.header('Location', `/users/${task.id}`)
+    reply.header('Location', `/tasks/${task.id}`)
     return task
   }
 
